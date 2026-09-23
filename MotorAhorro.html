@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MotorAhorro — Gasolina vs. Diésel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#071c33;
+    --navy-900:#0e2b4d;
+    --navy-850:#123a63;
+    --blue-500:#1b6ea8;
+    --blue-300:#6fb4e0;
+    --amber-500:#c78a3a;
+    --amber-300:#e0b579;
+    --ink:#eef2f6;
+    --ink-dim:#9fb3c8;
+    --line:rgba(255,255,255,0.09);
+    --radius:10px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:inherit;margin:0;padding:0;}
+  html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px);}
+  html,body{height:100%;}
+  body{
+    background:var(--navy-950);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-color-scheme:light){
+    :root:not([data-theme="dark"]){
+      --navy-950:#071c33; --navy-900:#0e2b4d;
+    }
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  img,svg{max-width:100%;}
+
+  /* NAV */
+  header.nav{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+    background:rgba(7,28,51,0.86);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1080px;margin:0 auto;}
+  .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.25rem;display:flex;align-items:center;gap:8px;}
+  .logo-mark{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,var(--blue-500),var(--amber-500));flex:0 0 auto;}
+  nav.links{display:flex;gap:28px;font-size:0.95rem;color:var(--ink-dim);}
+  nav.links a{text-decoration:none;transition:color .15s;}
+  nav.links a:hover{color:var(--ink);}
+  @media (max-width:640px){nav.links{display:none;}}
+
+  /* HERO */
+  .hero{padding:96px 0 72px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(560px 320px at 82% 10%, rgba(27,110,168,0.28), transparent 70%),
+               radial-gradient(420px 280px at 8% 90%, rgba(199,138,58,0.16), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;max-width:720px;}
+  .hero h1{font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.08;font-weight:700;}
+  .hero p.sub{margin-top:20px;font-size:1.15rem;color:var(--ink-dim);max-width:520px;}
+  .cta{
+    display:inline-block;margin-top:34px;padding:14px 28px;
+    background:var(--blue-500);color:#fff;text-decoration:none;
+    border-radius:var(--radius);font-weight:600;font-size:0.98rem;
+    transition:background .15s, transform .15s;
+  }
+  .cta:hover{background:#2280c4;transform:translateY(-1px);}
+  .hero-price-strip{
+    margin-top:44px;display:flex;gap:32px;flex-wrap:wrap;
+    padding-top:24px;border-top:1px solid var(--line);
+  }
+  .price-item .label{font-size:0.82rem;color:var(--ink-dim);text-transform:none;}
+  .price-item .value{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:600;margin-top:2px;}
+  .price-item .value.gas{color:var(--blue-300);}
+  .price-item .value.diesel{color:var(--amber-300);}
+
+  /* SECTION SHARED */
+  section{padding:72px 0;}
+  section.alt{background:var(--navy-900);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .section-head{max-width:640px;margin-bottom:40px;}
+  .section-head h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:600;}
+  .section-head p{margin-top:12px;color:var(--ink-dim);font-size:1.02rem;}
+
+  /* COMPARATIVE CARDS */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:800px){.cards3{grid-template-columns:1fr;}}
+  .info-card{
+    background:var(--navy-900);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 24px;
+  }
+  .info-card .tag{font-size:0.82rem;color:var(--ink-dim);}
+  .info-card .big{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:600;margin:8px 0 6px;}
+  .info-card .detail{font-size:0.92rem;color:var(--ink-dim);}
+  .info-card .split{display:flex;gap:18px;margin-top:4px;}
+  .info-card .split div{flex:1;}
+  .info-card .split .k{font-size:0.78rem;color:var(--ink-dim);}
+  .info-card .split .v{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:600;}
+  .v.gas{color:var(--blue-300);}
+  .v.diesel{color:var(--amber-300);}
+
+  /* CAR LISTS */
+  .list-head{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+  .fuel-dot{width:11px;height:11px;border-radius:50%;}
+  .fuel-dot.gas{background:var(--blue-500);}
+  .fuel-dot.diesel{background:var(--amber-500);}
+  .list-head h3{font-size:1.35rem;font-weight:600;}
+  .car-list{display:flex;flex-direction:column;border-top:1px solid var(--line);}
+  .car-row{
+    display:grid;grid-template-columns:52px 1.4fr 0.7fr 0.7fr 0.7fr;
+    align-items:center;gap:16px;padding:18px 4px;border-bottom:1px solid var(--line);
+  }
+  @media (max-width:700px){
+    .car-row{grid-template-columns:40px 1fr;grid-template-areas:"icon name" "icon meta";row-gap:6px;padding:16px 4px;}
+    .car-row .metric{grid-area:meta;display:inline-block;margin-right:16px;font-size:0.85rem;}
+    .car-row .name-cell{grid-area:name;}
+    .car-row .icon-cell{grid-area:icon;}
+  }
+  .icon-cell svg{width:100%;height:auto;display:block;}
+  .name-cell .name{font-weight:600;font-size:1.02rem;}
+  .name-cell .segment{font-size:0.82rem;color:var(--ink-dim);}
+  .metric .k{font-size:0.72rem;color:var(--ink-dim);}
+  .metric .v{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;}
+
+  /* AD PLACEHOLDER */
+  .ad-slot{
+    border:1px dashed rgba(159,179,200,0.35);border-radius:var(--radius);
+    padding:28px 20px;text-align:center;color:var(--ink-dim);
+    font-size:0.85rem;background:rgba(255,255,255,0.02);
+    margin:56px 0;
+  }
+  .ad-slot .ad-label{font-size:0.7rem;letter-spacing:0.04em;color:var(--ink-dim);opacity:0.7;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:40px 0;}
+  .footer-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center;}
+  .footer-links{display:flex;gap:22px;flex-wrap:wrap;font-size:0.88rem;color:var(--ink-dim);}
+  .footer-links a{text-decoration:none;}
+  .footer-links a:hover{color:var(--ink);}
+  .footer-note{font-size:0.8rem;color:var(--ink-dim);margin-top:14px;max-width:640px;}
+
+  :focus-visible{outline:2px solid var(--blue-300);outline-offset:2px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span>MotorAhorro</div>
+    <nav class="links">
+      <a href="#comparativa">Comparativa</a>
+      <a href="#gasolina">Gasolina</a>
+      <a href="#diesel">Diésel</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <h1>Gasolina vs. Diésel: Guía de Ahorro y Consumo</h1>
+    <p class="sub">Descubre qué coche te conviene comprar hoy para gastar menos en cada kilómetro.</p>
+    <a href="#comparativa" class="cta">Ver Comparativa</a>
+    <div class="hero-price-strip">
+      <div class="price-item">
+        <div class="label">Gasolina 95 (media España)</div>
+        <div class="value gas">1,68 €/L</div>
+      </div>
+      <div class="price-item">
+        <div class="label">Gasóleo diésel (media España)</div>
+        <div class="value diesel">1,80 €/L</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="comparativa">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>¿Por qué importa el tipo de motor hoy?</h2>
+      <p>El precio de los carburantes ha subido con fuerza en los últimos años y, desde 2022, el gasóleo suele costar más por litro que la gasolina en los surtidores españoles. Esto ha cambiado la cuenta que antes favorecía casi siempre al diésel: ahora conviene mirar tu kilometraje anual, no solo el consumo del motor, antes de decidir.</div>
+    </div>
+    <div class="cards3">
+      <div class="info-card">
+        <div class="tag">Consumo medio combinado</div>
+        <div class="split">
+          <div><div class="k">Gasolina</div><div class="v gas">5,8 L/100km</div></div>
+          <div><div class="k">Diésel</div><div class="v diesel">4,7 L/100km</div></div>
+        </div>
+        <div class="detail" style="margin-top:14px;">El diésel sigue rindiendo más por litro, sobre todo en carretera y autovía.</div>
+      </div>
+      <div class="info-card">
+        <div class="tag">Sobrecoste de compra</div>
+        <div class="big">+1.800–2.500 €</div>
+        <div class="detail">Es lo habitual que cuesta más un modelo diésel frente a su equivalente de gasolina en el mismo acabado.</div>
+      </div>
+      <div class="info-card">
+        <div class="tag">Kilómetros anuales para amortizar</div>
+        <div class="big">≈ 16.000–18.000 km</div>
+        <div class="detail">Por debajo de esta cifra, la gasolina suele salir más barata en el cómputo total; por encima, el diésel empieza a compensar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="ad-slot">
+    <div class="ad-label">ESPACIO PUBLICITARIO</div>
+    Bloque de anuncio (Google AdSense) — 728×90 / responsive
+  </div>
+</div>
+
+<section class="alt" id="gasolina">
+  <div class="wrap">
+    <div class="list-head"><span class="fuel-dot gas"></span><h3>Top 5 Coches de Gasolina de Bajo Consumo</h3></div>
+    <div class="car-list">
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#6fb4e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Toyota Yaris Hybrid</div><div class="segment">Urbano · híbrido autorrecargable</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">3,8 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">21.900 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v gas">6,4 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#6fb4e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Renault Clio TCe 90</div><div class="segment">Utilitario compacto</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">5,2 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">17.400 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v gas">8,7 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#6fb4e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Honda Jazz e:HEV</div><div class="segment">Urbano · híbrido</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,5 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">23.100 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v gas">7,6 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#6fb4e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Hyundai i20 1.2 MPI</div><div class="segment">Utilitario compacto</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">5,6 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">16.800 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v gas">9,4 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#6fb4e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Toyota Corolla Hybrid</div><div class="segment">Compacto familiar · híbrido</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,3 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">26.500 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v gas">7,2 €</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="ad-slot">
+    <div class="ad-label">ESPACIO PUBLICITARIO</div>
+    Bloque de anuncio (Google AdSense) — 336×280 / responsive
+  </div>
+</div>
+
+<section id="diesel">
+  <div class="wrap">
+    <div class="list-head"><span class="fuel-dot diesel"></span><h3>Top 5 Coches Diésel Eficientes para Viajar</h3></div>
+    <div class="car-list">
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#e0b579" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Škoda Octavia 2.0 TDI</div><div class="segment">Familiar · gran maletero</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,2 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">28.900 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v diesel">7,6 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#e0b579" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Peugeot 308 BlueHDi 130</div><div class="segment">Compacto familiar</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,1 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">27.600 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v diesel">7,4 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#e0b579" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Volkswagen Passat 2.0 TDI</div><div class="segment">Berlina/familiar de larga distancia</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,5 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">34.200 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v diesel">8,1 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#e0b579" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">SEAT León 2.0 TDI</div><div class="segment">Compacto deportivo</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,4 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">27.100 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v diesel">7,9 €</div></div>
+      </div>
+      <div class="car-row">
+        <div class="icon-cell">
+          <svg viewBox="0 0 48 24" fill="none"><path d="M4 17h40M8 17v-4l5-6h18l6 6h5v6M14 17a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 106 0 3 3 0 00-6 0z" stroke="#e0b579" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="name-cell"><div class="name">Dacia Duster Blue dCi</div><div class="segment">SUV compacto</div></div>
+        <div class="metric"><div class="k">Consumo</div><div class="v">4,8 L/100km</div></div>
+        <div class="metric"><div class="k">Desde</div><div class="v">21.300 €</div></div>
+        <div class="metric"><div class="k">Coste / 100km*</div><div class="v diesel">8,6 €</div></div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--ink-dim);margin-top:16px;">*Coste estimado con precios medios de 1,68 €/L (gasolina) y 1,80 €/L (diésel). Los datos de consumo y precio son orientativos y pueden variar según acabado y estilo de conducción.</p>
+  </div>
+</div>
+</section>
+
+<div class="wrap">
+  <div class="ad-slot">
+    <div class="ad-label">ESPACIO PUBLICITARIO</div>
+    Bloque de anuncio (Google AdSense) — 300×250 / responsive
+  </div>
+</div>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div>
+      <div class="logo"><span class="logo-mark"></span>MotorAhorro</div>
+      <div class="footer-note">Guía informativa para ayudarte a comparar el coste real de gasolina y diésel. Los precios de combustible y de vehículos son orientativos y se actualizan periódicamente.</div>
+    </div>
+    <div class="footer-links">
+      <a href="#">Política de Privacidad</a>
+      <a href="#">Aviso Legal</a>
+      <a href="#">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
